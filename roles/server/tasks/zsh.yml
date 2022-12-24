@@ -1,0 +1,41 @@
+- name: Install zsh  
+  become: yes
+  ansible.builtin.apt:
+    name: zsh
+    update_cache: yes
+
+- name: Change the user's shell  
+  become: yes
+  ansible.builtin.user:
+    name: "{{ user }}"
+    shell: /bin/zsh
+
+- name: Copy oh-my-zsh installer
+  ansible.builtin.copy:
+    src: "install.sh"
+    dest: "/home/{{ user }}/install.sh"
+
+- name: Install oh-my-zsh
+  ansible.builtin.command: 
+    cmd: "/bin/zsh ./install.sh"
+    chdir: "/home/{{ user }}"
+  ignore_errors: true
+
+- name: Install Powerlvl10k
+  ansible.builtin.command: 
+    cmd: "git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k"
+    chdir: "/home/{{ user }}"
+  ignore_errors: true
+
+- name: install zsh-autosuggestions
+  ansible.builtin.git:
+    repo: "https://github.com/zsh-users/zsh-autosuggestions"
+    dest: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+  ignore_errors: true
+
+
+- name: install zsh syntax highlight
+  ansible.builtin.git:
+    repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    dest: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+  ignore_errors: true

@@ -1,0 +1,7 @@
+- name: Deleting the old files
+  ansible.builtin.file:
+    path: "/home/{{ user }}/{{ item }}"
+    state: absent
+  loop:
+     - ".tmux.conf"
+     - ".tmux.conf.local"

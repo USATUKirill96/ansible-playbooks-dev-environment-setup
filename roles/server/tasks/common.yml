@@ -1,0 +1,45 @@
+- name: Install standart repository packages
+  become: yes
+  ansible.builtin.apt:
+    pkg:
+      - git
+      - curl
+      - neovim
+      - tmux
+      - ripgrep
+      - fzf
+      - bat
+      - ranger
+    update_cache: yes
+
+- name: Download zoxide
+  ansible.builtin.get_url:
+    url: https://github.com/ajeetdsouza/zoxide/releases/download/v0.8.3/zoxide_0.8.3_amd64.deb
+    dest: ~/zoxide.deb
+
+- name: Install zoxide
+  ansible.builtin.apt:
+    deb: "/home/{{ user }}/zoxide.deb"
+  become: yes
+
+- name: Download lsd
+  ansible.builtin.get_url:
+    url: https://github.com/Peltoche/lsd/releases/download/0.23.1/lsd_0.23.1_amd64.deb
+    dest: ~/lsd.deb
+
+- name: Install lsd
+  ansible.builtin.apt:
+    deb: "/home/{{ user }}/lsd.deb"
+  become: yes
+
+- name: Install bat-extras
+  ansible.builtin.git:
+    repo: "https://github.com/eth-p/bat-extras.git"
+    dest: "~/bat-extras"
+  ignore_errors: yes
+
+- name: install bat-extras
+  command: "/usr/bin/env bash /home/{{ user }}/bat-extras/build.sh --install"
+  become: yes
+  ignore_errors: yes
+

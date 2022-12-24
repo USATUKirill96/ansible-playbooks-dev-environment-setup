@@ -1,0 +1,19 @@
+- name: Clone the asdf repo
+  ansible.builtin.git:
+    repo: "https://github.com/asdf-vm/asdf.git"
+    dest: "~/.asdf"
+  ignore_errors: true
+
+- name: asdf install nodejs
+  command: "~/.asdf/bin/asdf {{ item }}"
+  with_items:
+  - plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+  ignore_errors: true
+
+- name: install lazydocker
+  command: "~/.asdf/bin/asdf {{ item }}"
+  with_items:
+  - plugin add lazydocker https://github.com/comdotlinux/asdf-lazydocker.git
+  - install lazydocker 0.12
+  - global lazydocker 0.12    
+  ignore_errors: true

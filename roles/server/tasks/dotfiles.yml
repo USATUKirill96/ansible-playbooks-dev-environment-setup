@@ -1,0 +1,41 @@
+- name: Clone the dotfiles repo
+  ansible.builtin.git:
+    repo: "{{ dotfiles }}"
+    dest: "/home/{{ user }}/.dotfiles/"
+  ignore_errors: true
+
+- name: Create the config folders
+  ansible.builtin.file:
+    path: "/home/{{ user }}/{{ item }}"
+    state: directory
+  loop:
+     - ".config"
+     - ".config/lsd"
+     - ".config/nvim"
+     - ".config/ranger"
+
+- name: Create file links
+  ansible.builtin.file:
+    src: "/home/{{ user }}/.dotfiles/{{ item.src }}"
+    dest: "/home/{{ user }}/{{ item.dest }}"
+    state: link
+  loop:
+    - { src: "zshrc", dest: ".zshrc" }
+    - { src: "tmux.conf", dest: ".tmux.conf" }
+    - { src: "tmux.conf.local", dest: ".tmux.conf.local" }
+    - { src: "config/lsd/config.yaml", dest: ".config/lsd/config.yaml" }
+    - { src: "config/nvim/init.vim", dest: ".config/nvim/init.vim" }
+    - { src: "config/nvim/coc-settings.json", dest: ".config/nvim/coc-settings.json" }
+
+- name: Find all ranger configs
+  find:
+    paths: "~/.dotfiles/config/ranger"
+  register: find
+
+- name: Create symlinks for the ranger configs
+  file:
+    src: "{{ item.path }}"
+    path: "~/.config/ranger/{{ item.path | basename }}"
+    state: link
+  with_items: "{{ find.files }}"
+

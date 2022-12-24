@@ -1,0 +1,15 @@
+- name: Remove the old files
+  import_tasks: clear.yml
+  tags: [clear]
+
+- name: Install common modules
+  import_tasks: common.yml
+
+- name: Install and setup zsh
+  import_tasks: zsh.yml
+
+- name: Copy dotfiles
+  import_tasks: dotfiles.yml
+
+- name: Install Languages
+  import_tasks: languages.yml
